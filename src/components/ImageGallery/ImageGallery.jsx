@@ -6,6 +6,7 @@ class ImageGallery extends Component {
       this.props.openModal(target.dataset.largeimg);
     }
   };
+
   render() {
     return (
       <ul className="ImageGallery" onClick={this.show}>
