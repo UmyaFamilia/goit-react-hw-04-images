@@ -6,6 +6,7 @@ export default function Modal(props) {
     return () => {
       window.removeEventListener('keydown', closeEscape);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // componentDidMount() {
