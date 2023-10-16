@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Searchbar from './Searchbar/Searchbar';
 import request from './request';
 import ImageGallery from './ImageGallery/ImageGallery';
@@ -15,7 +15,8 @@ export function App() {
   const [forButtonloader, setForButtonloader] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [imageURL, setImageURL] = useState('');
-  const [alreadyMount, setAlreadyMount] = useState(false);
+  let isMounted = useRef(false);
+
   const requestCover = (query, page) => {
     request(query, page)
       .then(galerry => {
@@ -25,11 +26,10 @@ export function App() {
       })
       .catch(error => console.log(error));
   };
+
   useEffect(() => {
-    if (alreadyMount) {
+    if (isMounted.current) {
       requestCover(query, page);
-    } else {
-      setAlreadyMount(true);
     }
   }, [query, page]);
 
@@ -40,6 +40,7 @@ export function App() {
   };
 
   const callYouLater = word => {
+    isMounted.current = true;
     setQuery(word);
     setArray([]);
     setPage(1);
