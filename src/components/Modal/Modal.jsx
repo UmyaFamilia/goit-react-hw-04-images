@@ -1,29 +1,36 @@
-import { Component } from 'react';
-export default class Modal extends Component {
-  componentDidMount() {
-    window.addEventListener('keydown', this.closeEscape);
-  }
+import { useEffect } from 'react';
 
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.closeEscape);
-  }
-  closeEscape = e => {
+export default function Modal(props) {
+  useEffect(() => {
+    window.addEventListener('keydown', closeEscape);
+    return () => {
+      window.removeEventListener('keydown', closeEscape);
+    };
+  }, []);
+
+  // componentDidMount() {
+  //   window.addEventListener('keydown', this.closeEscape);
+  // }
+
+  // componentWillUnmount() {
+  //   window.removeEventListener('keydown', this.closeEscape);
+  // }
+  const closeEscape = e => {
     if (e.code === 'Escape') {
-      this.props.closeModal();
+      props.closeModal();
     }
   };
-  backDropClose = e => {
+  const backDropClose = e => {
     if (e.target === e.currentTarget) {
-      this.props.closeModal();
+      props.closeModal();
     }
   };
-  render() {
-    return (
-      <div className="overlay" onClick={this.backDropClose}>
-        <div className="modal">
-          <img src={this.props.img} alt="" />
-        </div>
+
+  return (
+    <div className="overlay" onClick={backDropClose}>
+      <div className="modal">
+        <img src={props.img} alt="" />
       </div>
-    );
-  }
+    </div>
+  );
 }

@@ -1,81 +1,65 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import Searchbar from './Searchbar/Searchbar';
 import request from './request';
 import ImageGallery from './ImageGallery/ImageGallery';
 import LoadMore from './Button/Button';
 import Loader from './Loader/Loader';
 import Modal from './Modal/Modal';
-export class App extends Component {
-  state = {
-    page: 1,
-    query: '',
-    array: [],
-    loader: false,
-    forButtonloader: false,
-    modalOpen: false,
-    imageURL: '',
-  };
+import { useEffect } from 'react';
 
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevState.query !== this.state.query ||
-      prevState.page !== this.state.page
-    ) {
-      this.request(this.state.query, this.state.page);
-    }
-  }
-  request = (query, page) => {
+export function App() {
+  const [page, setPage] = useState(1);
+  const [query, setQuery] = useState('');
+  const [array, setArray] = useState([]);
+  const [loader, setLoader] = useState(false);
+  const [forButtonloader, setForButtonloader] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [imageURL, setImageURL] = useState('');
+  const [alreadyMount, setAlreadyMount] = useState(false);
+  const requestCover = (query, page) => {
     request(query, page)
-      .then(galerry =>
-        this.setState(prev => ({
-          array: [...prev.array, ...galerry.hits],
-          forButtonloader: true,
-          loader: false,
-        }))
-      )
+      .then(galerry => {
+        setArray(prev => [...prev, ...galerry.hits]);
+        setForButtonloader(true);
+        setLoader(false);
+      })
       .catch(error => console.log(error));
   };
+  useEffect(() => {
+    if (alreadyMount) {
+      requestCover(query, page);
+    } else {
+      setAlreadyMount(true);
+    }
+  }, [query, page]);
 
-  nextPage = () => {
-    this.setState(prev => ({
-      page: prev.page + 1,
-      forButtonloader: false,
-      loader: true,
-    }));
+  const nextPage = () => {
+    setPage(prev => prev + 1);
+    setForButtonloader(false);
+    setLoader(true);
   };
 
-  callYouLater = word => {
-    this.setState({
-      query: word,
-      array: [],
-      page: 1,
-      loader: true,
-    });
+  const callYouLater = word => {
+    setQuery(word);
+    setArray([]);
+    setPage(1);
+    setLoader(true);
   };
 
-  openModal = imageURL => {
-    this.setState(prev => ({
-      modalOpen: !prev.modalOpen,
-      imageURL: imageURL,
-    }));
+  const openModal = imageURL => {
+    setModalOpen(prev => !prev);
+    setImageURL(imageURL);
   };
 
-  render() {
-    let { array, forButtonloader, loader, modalOpen, imageURL } = this.state;
-    console.log(this.state.page);
-    console.log(this.state.query);
-    return (
-      <>
-        <Searchbar callYouLater={this.callYouLater} />
-        <ImageGallery obj={array} openModal={this.openModal} />
-        {forButtonloader && array.length > 11 && (
-          <LoadMore nextPage={this.nextPage} />
-        )}
-        {loader && <Loader />}
-        {array.length > 0 && modalOpen && (
-          <Modal img={imageURL} closeModal={this.openModal} />
-        )}
-      </>
-    );
-  }
+  return (
+    <>
+      <Searchbar callYouLater={callYouLater} />
+      <ImageGallery obj={array} openModal={openModal} />
+      {forButtonloader && array.length > 11 && <LoadMore nextPage={nextPage} />}
+      {loader && <Loader />}
+      {array.length > 0 && modalOpen && (
+        <Modal img={imageURL} closeModal={openModal} />
+      )}
+    </>
+  );
 }
