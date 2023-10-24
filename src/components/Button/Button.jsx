@@ -1,6 +1,6 @@
-const LoadMore = props => {
+const LoadMore = ({ nextPage }) => {
   const showMore = () => {
-    props.nextPage();
+    nextPage();
   };
   return (
     <div className="Button-cover">

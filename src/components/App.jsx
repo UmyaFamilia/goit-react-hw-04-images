@@ -17,6 +17,12 @@ export function App() {
   const [imageURL, setImageURL] = useState('');
   let isMounted = useRef(false);
 
+  useEffect(() => {
+    if (isMounted.current) {
+      requestCover(query, page);
+    }
+  }, [query, page]);
+
   const requestCover = (query, page) => {
     request(query, page)
       .then(galerry => {
@@ -26,12 +32,6 @@ export function App() {
       })
       .catch(error => console.log(error));
   };
-
-  useEffect(() => {
-    if (isMounted.current) {
-      requestCover(query, page);
-    }
-  }, [query, page]);
 
   const nextPage = () => {
     setPage(prev => prev + 1);

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-export default function Modal(props) {
+export default function Modal({ closeModal, img }) {
   useEffect(() => {
     window.addEventListener('keydown', closeEscape);
     return () => {
@@ -9,28 +9,21 @@ export default function Modal(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // componentDidMount() {
-  //   window.addEventListener('keydown', this.closeEscape);
-  // }
-
-  // componentWillUnmount() {
-  //   window.removeEventListener('keydown', this.closeEscape);
-  // }
   const closeEscape = e => {
     if (e.code === 'Escape') {
-      props.closeModal();
+      closeModal();
     }
   };
   const backDropClose = e => {
     if (e.target === e.currentTarget) {
-      props.closeModal();
+      closeModal();
     }
   };
 
   return (
     <div className="overlay" onClick={backDropClose}>
       <div className="modal">
-        <img src={props.img} alt="" />
+        <img src={img} alt="" />
       </div>
     </div>
   );

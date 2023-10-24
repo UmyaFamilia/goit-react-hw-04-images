@@ -1,7 +1,7 @@
-function Searchbar(props) {
+function Searchbar({ callYouLater }) {
   const find = e => {
     e.preventDefault();
-    props.callYouLater(e.target.input.value);
+    callYouLater(e.target.input.value);
   };
 
   return (
